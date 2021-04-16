@@ -1,0 +1,47 @@
+my_func(){
+L1=a
+return L1
+}
+main(){
+L2=1
+L3=a=L2
+LABEL: 
+L4=a>10
+L5=L4
+L6=L5
+L7=!L6
+while L7 {
+L8=1
+L9=a+L8
+L10=a=L9
+L11=a%1
+L12=L11==0
+if L12 {
+break
+}
+}
+L13=a>10
+L14=a==5
+L15=a
+L17=my_funcL15L16==a
+L18=L13&&L14||L17
+if L18 {
+L19=1
+L20=a-L19
+L21=a=L20
+} else {
+L22=a
+L23=a=L22
+jmp LABEL
+
+}
+L24=1
+L25=b=L24
+L26=1|5
+L27=a=L26
+L28=a
+L31=my_funcL28L30
+L32=a=L31
+L33=a
+return L33
+}

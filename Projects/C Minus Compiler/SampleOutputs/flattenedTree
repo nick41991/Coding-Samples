@@ -1,0 +1,122 @@
+C Parser:  Reading from file tests/longstatement.c . . .
+Input Parsed Successfully!
+Program
+	|
+	-------- main
+		|
+		-------- int
+		|
+		-------- params
+		|
+		-------- Compound Statement
+			|
+			-------- Local Declarations
+				|
+				-------- a
+					|
+					-------- int
+			|
+			-------- Statement List
+				|
+				-------- Expression
+					|
+					-------- a
+					|
+					-------- =
+					|
+					-------- Expression
+						|
+						-------- Expression
+							|
+							-------- 1
+							|
+							-------- +
+							|
+							-------- Expression
+								|
+								-------- 2
+						|
+						-------- *
+						|
+						-------- 3
+						|
+						-------- /
+						|
+						-------- 4
+						|
+						-------- +
+						|
+						-------- Expression
+							|
+							-------- Expression
+								|
+								-------- 5
+								|
+								-------- *
+								|
+								-------- 6
+				|
+				-------- Return
+					|
+					-------- Expression
+						|
+						-------- 1
+Compiler:  C program parsed successfully.
+
+
+L1: 0
+L2: 1
+L3: 1
+L4: 0
+L5: 3
+L6: 0
+L7: 0
+L1: 0
+L2: 1
+L3: 1
+L4: 0
+L5: 2
+L6: 0
+L7: 0
+L8: 1
+L1: 0
+L2: 1
+L3: 1
+L4: 0
+L5: 1
+L6: 0
+L7: 0
+L8: 1
+L9: 1
+Program
+|
+-------- main
+	|
+	-------- int
+	|
+	-------- params
+	|
+	-------- Compound Statement
+		|
+		-------- Local Declarations
+			|
+			-------- a
+				|
+				-------- int
+		|
+		-------- Statement List
+			|
+			-------- L6
+			|
+			-------- Return
+				|
+				-------- L7
+L1: 2, 7
+L2: 1+L1, 6
+L3: 5*6, 7
+L4: L3, 6
+L5: L9+L4, 5
+L6: a=L5, 4
+L7: 1, 5
+L8: L2*3, 6
+L9: L8/4, 6

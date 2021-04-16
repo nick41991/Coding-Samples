@@ -1,0 +1,30 @@
+C Parser:  Reading from file tests/statements.c . . .
+Input Parsed Successfully!
+Compiler:  C program parsed successfully.
+main(){
+LABEL: 
+L1=5
+L2=a=L1
+L3=6
+L4=a=L3
+L5=1
+L6=5-L5
+L7=a==L6
+if L7 {
+L8=1
+L9=b=L8
+L10=6
+L11=a=L10
+} else {
+L12=4
+L13=a=L12
+
+}
+L14=1==1
+while L14 {
+L15=1
+L16=a+L15
+L17=a=L16
+}
+jmp TOP
+}

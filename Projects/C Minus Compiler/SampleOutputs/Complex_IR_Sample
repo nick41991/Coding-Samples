@@ -1,0 +1,36 @@
+C Parser:  Reading from file tests/while.c . . .
+Input Parsed Successfully!
+Compiler:  C program parsed successfully.
+my_func(a, b){
+L1=a
+return L1
+}
+main(){
+L2=1
+L3=a=L2
+L1=a
+L13=a>10
+L14=a==5
+L15=a
+L16=my_funcL15==a
+L17=L13&&L14||L16
+if L17 {
+L18=1
+L19=a-L18
+L20=a=L19
+} else {
+L21=a
+L22=a=L21
+jmp LABEL
+
+}
+L23=1
+L24=b=L23
+L25=1|5
+L26=a=L25
+L27=a
+L30=my_funcL27L29
+L31=a=L30
+L32=a
+return L32
+}

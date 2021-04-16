@@ -1,0 +1,687 @@
+PARSER_BEGIN(Parser)
+
+import java.util.*;
+
+/** Compiler.jj defines grammar and can parse a .c file. When this file is compiled with jcc, it will create
+* Compiler.java, CompilerConstants.java, CompilerTokenManager.java, ParseException.java, SimpleCharStream.java,
+* Token.java, and TokenMgrError.java
+*/
+
+public class Parser{
+	public static ArrayList<SyntaxToken> tokenList = new ArrayList<SyntaxToken>();
+	public static Node root = new Node();
+
+	public Parser() {
+		;
+	}
+
+  	private static void printSuccess(){
+  		System.out.println("Input Parsed Successfully!");
+  	}
+
+	private static void printTokens(){
+		for(SyntaxToken tok : tokenList){
+			System.out.println(tok.toString());
+		}
+	}
+
+
+	//Prints Abstract Syntax Tree from the root node
+	private static void printParseTree(Node node, int height){
+		int i;
+		for(i = 0; i < height; i++) {
+			System.out.print("\t");
+		}
+		if(height != 0){
+			System.out.println("-------- " + node.getPayload());
+		} else {
+			System.out.println(node.getPayload());
+		}
+		for(Node n : node.children) {
+			for(i = 0; i < height + 1; i++) {
+				System.out.print("\t");
+			}
+			System.out.println("|");
+
+			printParseTree(n, height + 1);
+		}
+	}
+
+    // Run the parser
+	public static Node run(boolean tokenBool, boolean fileSet, String fileName) {
+      	Parser parser;
+
+		/*boolean tokenBool = false;
+		boolean parseTreeBool = false;
+		boolean fileSet = false;
+		String fileName = null;
+
+
+		for(String s : args){
+			if(s.equals("-t")){
+				tokenBool = true;
+			} else if (s.equals("-pt")){
+				parseTreeBool = true;
+			} else if (!fileSet){
+				fileName = s;
+				fileSet = true;
+			} else {
+				System.out.println("Error: More than one file passed as argument.");
+				return;
+			}
+		}*/
+
+		//Mostly for easy debugging, may not be in final version
+		if(!fileSet){
+        		System.out.println("C Parser:  Reading from standard input . . .");
+        		parser = new Parser(System.in);
+      		}
+
+      		else if(fileSet){
+        		System.out.println("C Parser:  Reading from file " + fileName + " . . ." );
+      			try {
+        			parser = new Parser(new java.io.FileInputStream(fileName));
+      			}
+      			catch(java.io.FileNotFoundException e){
+        			System.out.println("C Parser:  File " + fileName + " not found.");
+        			return null;
+        		}
+      		} else {
+        		System.out.println("Compiler:  Usage is one of:");
+        		System.out.println("         java Compiler [-t] [-pt] [fileName]");
+        		return null;
+      		}
+      		try {
+        		parser.Program();
+			if(tokenBool){
+				printTokens();
+			}
+        		System.out.println("Compiler:  C program parsed successfully.");
+      		}
+      		catch(ParseException e){
+        		System.out.println("Compiler:  Encountered errors during parse.");
+        		e.printStackTrace();
+      		}
+			return root;
+    	}
+}
+
+PARSER_END(Parser)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+| "#" : PREPROCESSOR_OUTPUT
+}
+
+<PREPROCESSOR_OUTPUT> SKIP:
+{
+     "\n" : DEFAULT
+}
+
+<PREPROCESSOR_OUTPUT> MORE:
+{
+ "\\\n"
+ |
+ "\\\r\n"
+ |
+ < ~[] >
+}
+
+
+TOKEN : { //Literals
+ 	<INTEGER_LITERAL: (["1"-"9"])* ["0"-"9"]> |
+	<CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'"> |
+	<STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+}
+
+TOKEN : { //Keywords
+	<CONTINUE: "continue"> |
+	<RETURN: "return"> |
+	<WHILE: "while"> |
+	<BREAK: "break"> |
+	<IF: "if"> |
+	<ELSE: "else"> |
+	<CASE: "case"> |
+	<GOTO: "goto"> |
+	<INT: "int">  |
+	<VOID: "void">
+}
+
+TOKEN : { //Identifiers
+ <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+|  <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+|  <#DIGIT: ["0"-"9"]>
+}
+
+// Rule defining a program, sets root of ast and prints success message upon return
+void Program() : {}
+{
+	{root.setPayload("Program");}
+	(DeclarationList(root))+
+	{printSuccess();}
+}
+
+// A program is a list of declarations
+void DeclarationList(Node parent) : {}
+{
+	(Declaration(parent))+
+}
+
+// A declaration is a variable or function
+void Declaration(Node parent) : {}
+{
+	( LOOKAHEAD( VarDeclaration(parent) ) VarDeclaration(parent) | FuncDeclaration(parent) )
+}
+
+// Variables are declared by a type and identifier
+void VarDeclaration(Node parent) : {Token i; Token s;}
+{
+	{
+		Node child = new Node(parent, "");
+		parent.addChild(child);
+	}
+	TypeSpecifier(child) i = <IDENTIFIER> s = ";"
+	{
+		child.setPayload(i.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", i.image));
+		tokenList.add(new SyntaxToken("SEMICOLON", s.image));
+	}
+}
+
+// A type is int or void
+void TypeSpecifier(Node parent) : {Token i; Token v;}
+{
+	{
+		Node child = new Node(parent, "");
+		parent.addChild(child);
+	}
+	(i = <INT>
+	{
+		child.setPayload(i.image);
+		tokenList.add(new SyntaxToken("TYPE_SPECIFIER", i.image));
+	}
+	| v = <VOID>
+	{
+		child.setPayload(v.image);
+		tokenList.add(new SyntaxToken("TYPE_SPECIFIER", v.image));
+	}
+	)
+}
+
+// A function has a type, an id, parameters, and a compound statement
+void FuncDeclaration(Node parent) : {Token i; Token l; Token r;}
+{
+	{
+		Node id = new Node(parent, "");
+		parent.addChild(id);
+		Node params = new Node(id, "params");
+		Node cs = new Node(id, "Compound Statement");
+
+	}
+	TypeSpecifier(id) i = <IDENTIFIER> l = "("
+	{
+		id.setPayload(i.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", i.image));
+		tokenList.add(new SyntaxToken("LPAREN", l.image));
+	}
+	Params(params) r = ")"
+	{
+		tokenList.add(new SyntaxToken("RPAREN", r.image));
+		id.addChild(params);
+		id.addChild(cs);
+	}
+	CompoundStatement(cs)
+}
+
+// Parameters are in a list
+void Params(Node parent) : {Token v;}
+{
+	( LOOKAHEAD( <VOID> ) <VOID> | ParamList(parent)
+	//{tokenList.add(new SyntaxToken("VOID", v.image));}
+	)
+}
+
+// Defines the list of parameters
+void ParamList(Node parent) : {Token t;}
+{
+	[Param(parent) [ t = ","
+	{
+		tokenList.add(new SyntaxToken("COMMA", t.image));
+	}
+	ParamList(parent) ]]
+
+}
+
+// a parameter has a type and a name
+void Param(Node parent) : {Token i;}
+{
+	{
+		Node child = new Node(parent, "");
+		parent.addChild(child);
+	}
+	TypeSpecifier(child) i = <IDENTIFIER>
+	{
+		child.setPayload(i.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", i.image));
+	}
+}
+
+// A Compound Statement is a set of local declarations and statements enclosed in parenthesis
+void CompoundStatement(Node parent) : {Token l; Token r;}
+{
+	(l = "{"
+	{
+		tokenList.add(new SyntaxToken("LBRACKET", l.image));
+		Node ld = new Node(parent, "Local Declarations");
+		Node sl = new Node(parent, "Statement List");
+		parent.addChild(ld);
+		parent.addChild(sl);
+	}
+	LocalDeclarations(ld) StatementList(sl)
+	r = "}")
+	{
+		tokenList.add(new SyntaxToken("RBRACKET", r.image));
+	}
+}
+
+// Variable declarations
+void LocalDeclarations(Node parent) : {}
+{
+	(VarDeclaration(parent))*
+}
+
+// List of statements
+void StatementList(Node parent) : {}
+{
+	(Statement(parent))+
+}
+
+// Defines the various types of statements
+void Statement(Node parent) : {}
+{
+	( LOOKAHEAD(2) LabeledStatement(parent) | //Labels for goto
+	  ExpressionStatement(parent) |
+	  CompoundStatement(parent) |
+	  SelectionStatement(parent) |
+	  IterationStatement(parent) |
+	  JumpStatement(parent) ) // goto and returns
+}
+
+// Labels for goto
+void LabeledStatement(Node parent) : {Token i; Token c;}
+{
+	{
+		Node id = new Node(parent, "");
+		parent.addChild(id);
+	}
+	( i = <IDENTIFIER> c = ":"
+	{
+		id.setPayload(i.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", i.image));
+		tokenList.add(new SyntaxToken("COLON", c.image));
+	}
+	Statement(id) )
+}
+
+// Expression Statements
+void ExpressionStatement(Node parent) : {Token s;}
+{
+ 	[ Expression(parent) ] s = ";"
+	{tokenList.add(new SyntaxToken("SEMICOLON", s.image));}
+}
+
+//Selection Statements (if else)
+void SelectionStatement(Node parent) : {Token i; Token l; Token r; Token e;}
+{
+	{
+		Node ifTok = new Node(parent, "if");
+		Node ifExp = new Node(ifTok, "ifCondition");
+		Node ifStmt = new Node(ifTok, "ifStatement");
+		parent.addChild(ifTok);
+		ifTok.addChild(ifExp);
+		ifTok.addChild(ifStmt);
+	}
+	( i = <IF> l = "("
+	{
+		tokenList.add(new SyntaxToken("IF", i.image));
+		tokenList.add(new SyntaxToken("LPAREN", l.image));
+	}
+	Expression(ifExp) r = ")" Statement(ifStmt)
+	{
+		tokenList.add(new SyntaxToken("RPAREN", r.image));
+		Node elseTok = new Node(parent, "else");
+		Node elseStmt = new Node(elseTok, "elseStatement");
+	}
+	[ LOOKAHEAD(2) e = <ELSE> Statement(elseStmt)
+	{
+		ifTok.addChild(elseTok);
+		elseTok.addChild(elseStmt);
+		tokenList.add(new SyntaxToken("ELSE", e.image));}
+	] )
+}
+
+// Iteration (while)
+void IterationStatement(Node parent) : {Token w; Token l; Token r;}
+{
+	{
+		Node whileTok = new Node(parent, "while");
+		Node whileCond = new Node(whileTok, "whileCondition");
+		Node whileStmt = new Node(whileTok, "whileStatement");
+		parent.addChild(whileTok);
+		whileTok.addChild(whileCond);
+		whileTok.addChild(whileStmt);
+	}
+
+	( w = <WHILE> l = "("
+	{
+		tokenList.add(new SyntaxToken("WHILE", w.image));
+		tokenList.add(new SyntaxToken("LPAREN", l.image));
+	}
+	Expression(whileCond)
+	r = ")" Statement(whileStmt) )
+	{
+		tokenList.add(new SyntaxToken("RPAREN", r.image));
+	}
+}
+
+//Various jumps (goto, continue, break, return)
+void JumpStatement(Node parent) : {Token t; Token id; Token s;}
+{
+	{
+		Node jump = new Node(parent, "");
+		parent.addChild(jump);
+	}
+
+	( t = <GOTO> id = <IDENTIFIER> s = ";"
+	{
+		jump.setPayload("GOTO");
+		Node dest = new Node(jump, id.image);
+		jump.addChild(dest);
+		tokenList.add(new SyntaxToken("GOTO", t.image));
+		tokenList.add(new SyntaxToken("IDENTIFIER", id.image));
+		tokenList.add(new SyntaxToken("SEMICOLON", s.image));
+	}
+	| t = <CONTINUE> s = ";"
+	{
+		jump.setPayload("Continue");
+		tokenList.add(new SyntaxToken("CONTINUE", t.image));
+		tokenList.add(new SyntaxToken("SEMICOLON", s.image));
+	}
+	| t = <BREAK> s = ";"
+	{
+		jump.setPayload("Break");
+		tokenList.add(new SyntaxToken("BREAK", t.image));
+		tokenList.add(new SyntaxToken("SEMICOLON", s.image));
+	}
+	| t = <RETURN>
+	{
+		jump.setPayload("Return");
+		tokenList.add(new SyntaxToken("RETURN", t.image));
+	}
+	[ Expression(jump) ] s = ";"
+	{
+		tokenList.add(new SyntaxToken("SEMICOLON", s.image));
+	}
+	)
+}
+
+//Expression
+void Expression(Node parent) : {}
+{
+	{
+		Node exp = new Node(parent, "Expression");
+		parent.addChild(exp);
+	}
+	(LOOKAHEAD(Variable(exp) AssignmentOperator(exp)) Variable(exp) AssignmentOperator(exp) Expression(exp) |
+	LOOKAHEAD(Negation(exp)) Negation(exp) |
+	LogicalORExpression(exp))
+}
+
+void Negation(Node parent) : {Token t;}
+{
+	{
+		Node not = new Node(parent, "!");
+		parent.addChild(not);
+		Node exp = new Node(not, "Expression");
+		not.addChild(exp);
+	}
+	(t = "!")
+	{
+		tokenList.add(new SyntaxToken("NEGATION", t.image));
+	}
+	Expression(exp)
+}
+
+void Variable(Node parent) : {Token i;}
+{
+	{
+		Node id = new Node(parent, "");
+		parent.addChild(id);
+	}
+	[LOOKAHEAD(TypeSpecifier(id)) TypeSpecifier(id)] i = <IDENTIFIER>
+	{
+		id.setPayload(i.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", i.image));
+	}
+}
+
+void AssignmentOperator(Node parent) : {Token t;}
+{
+	( t = "="
+	| t = "*="
+	| t = "/="
+	| t = "+="
+	| t = "-="
+	)
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("ASSIGNMENTOP", t.image));
+	}
+
+}
+
+//Boolean Operations have lower precedence than Mathematical Operations so they are higher in the parse tree
+
+//Boolean Operations: Order of precedence (low to high): || -> && -> | -> ^ -> & -> == or != -> <, >, <=, or >=
+void LogicalORExpression(Node parent) : {Token t;}
+{
+	LogicalANDExpression(parent) [ t = "||"
+	{
+		Node op = new Node(parent, "||");
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("LOGICOP", t.image));
+	}
+	LogicalORExpression(parent) ]
+
+}
+
+void LogicalANDExpression(Node parent) : {Token t;}
+{
+	InclusiveORExpression(parent) [ t = "&&"
+	{
+		Node op = new Node(parent, "&&");
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("LOGICOP", t.image));
+	}
+	LogicalANDExpression(parent) ]
+
+}
+
+void InclusiveORExpression(Node parent) : {Token t;}
+{
+	ExclusiveORExpression(parent) [ t = "|"
+	{
+		Node op = new Node(parent, "|");
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("BINARYOP", t.image));
+	}
+	InclusiveORExpression(parent) ]
+
+}
+
+void ExclusiveORExpression(Node parent) : {Token t;}
+{
+	ANDExpression(parent) [ t = "^"
+	{
+		Node op = new Node(parent, "^");
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("BINARYOP", t.image));
+	}
+	ExclusiveORExpression(parent) ]
+}
+
+void ANDExpression(Node parent) : {Token t;}
+{
+	EqualityExpression(parent) [ t = "&"
+	{
+		Node op = new Node(parent, "&");
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("BINARYOP", t.image));
+	}
+	ANDExpression(parent) ]
+
+}
+
+void EqualityExpression(Node parent) : {Token t;}
+{
+	RelationalExpression(parent) [ ( t = "=="
+	| t = "!="
+	)
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("RELOP", t.image));
+	}
+	EqualityExpression(parent)
+	]
+}
+
+void RelationalExpression(Node parent) : {Token t;}
+{
+	ShiftExpression(parent) [ ( t = "<"
+	| t = ">"
+	| t = "<="
+	| t = ">=" )
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("RELOP", t.image));
+	}
+	RelationalExpression(parent) ]
+
+}
+//End of Booleans
+
+//Mathematical Operations: Order of precedence (low to high): >> or << -> + or - -> *, /, or %
+void ShiftExpression(Node parent) : {Token t;}
+{
+	AdditiveExpression(parent) [ ( t = "<<"
+	| t = ">>"
+	)
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("SHIFT", t.image));
+	}
+	ShiftExpression(parent) ]
+}
+
+void AdditiveExpression(Node parent) : {Token t;}
+{
+	MultiplicativeExpression(parent) [
+	( t = "+" | t = "-" )
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("ADDOP", t.image));
+	}
+	Expression(parent)
+	]
+}
+
+void MultiplicativeExpression(Node parent) : {Token t;}
+{
+	Factor(parent) [ ( t = "*" | t = "/" | t = "%")
+	{
+		Node op = new Node(parent, t.image);
+		parent.addChild(op);
+		tokenList.add(new SyntaxToken("MULOP", t.image));
+	}
+	MultiplicativeExpression(parent) ]
+
+}
+
+// A factor can be an expression, call, variable or a constant
+void Factor(Node parent) : {Token l; Token r;}
+{
+	l = "("
+	{
+		Node exp = new Node(parent, "Expression");
+		parent.addChild(exp);
+		tokenList.add(new SyntaxToken("LPAREN", l.image));
+	}
+	LogicalORExpression(exp) r = ")"
+	{
+		tokenList.add(new SyntaxToken("RPAREN", r.image));
+	}
+	| LOOKAHEAD(Call(parent)) Call(parent) | Variable(parent) | Constant(parent)
+}
+
+// A call has an id and a argument list
+void Call(Node parent) : {Token t; Token l; Token r;}
+{
+	{
+		Node id = new Node(parent, "");
+		parent.addChild(id);
+
+	}
+	(t = <IDENTIFIER> l = "("
+	{
+		id.setPayload(t.image);
+		tokenList.add(new SyntaxToken("IDENTIFIER", t.image));
+		tokenList.add(new SyntaxToken("LPAREN", l.image));
+	}
+	Args(id) r = ")")
+	{tokenList.add(new SyntaxToken("RPAREN", r.image));}
+}
+
+// An argument list can have 0 or more expressions
+void Args(Node parent) : {Token t;}
+{
+	[Expression(parent) [ t = ","
+	{
+		tokenList.add(new SyntaxToken("COMMA", t.image));
+	}
+	Expression(parent) ]]
+}
+
+//Constant
+void Constant(Node parent) : {Token t;}
+{
+	{
+		Node con = new Node(parent, "");
+		parent.addChild(con);
+	}
+	(t = <INTEGER_LITERAL>
+	{
+		con.setPayload(t.image);
+		tokenList.add(new SyntaxToken("INTEGER_LITERAL", t.image));
+	}
+	| t = <CHARACTER_LITERAL>
+	{
+		con.setPayload(t.image);
+		tokenList.add(new SyntaxToken("CHARACTER_LITERAL", t.image));
+	}
+	| t = <STRING_LITERAL>
+	{
+		con.setPayload(t.image);
+		tokenList.add(new SyntaxToken("STRING_LITERAL", t.image));
+	}
+	)
+}

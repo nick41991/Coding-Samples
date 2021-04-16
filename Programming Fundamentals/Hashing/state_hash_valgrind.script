@@ -1,0 +1,189 @@
+Script started on Fri 14 Apr 2017 03:43:28 PM MDT
+]0;nick@nick-Lenovo-ideapad-Y700-15ISK: ~/Dropbox/122/hw/6b[01;32mnick@nick-Lenovo-ideapad-Y700-15ISK[00m:[01;34m~/Dropbox/122/hw/6b[00m$ valgrinf[Kd ./state_hash
+==12227== Memcheck, a memory error detector
+==12227== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==12227== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==12227== Command: ./state_hash
+==12227== 
+==12227== Invalid read of size 1
+==12227==    at 0x4C30F74: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400EEB: hash (state_hash.c:172)
+==12227==    by 0x400A66: main (state_hash.c:65)
+==12227==  Address 0x5205052 is 0 bytes after a block of size 2 alloc'd
+==12227==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400E44: new_postal (state_hash.c:155)
+==12227==    by 0x400A49: main (state_hash.c:64)
+==12227== 
+==12227== Conditional jump or move depends on uninitialised value(s)
+==12227==    at 0x400A96: main (state_hash.c:71)
+==12227== 
+==12227== Conditional jump or move depends on uninitialised value(s)
+==12227==    at 0x401003: debug_print (state_hash.c:225)
+==12227==    by 0x400B1D: main (state_hash.c:81)
+==12227== 
+i = 6
+==12227== Invalid read of size 1
+==12227==    at 0x4E88CC0: vfprintf (vfprintf.c:1632)
+==12227==    by 0x4E8F898: printf (printf.c:33)
+==12227==    by 0x401057: debug_print (state_hash.c:227)
+==12227==    by 0x400B1D: main (state_hash.c:81)
+==12227==  Address 0x5206012 is 0 bytes after a block of size 2 alloc'd
+==12227==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400E44: new_postal (state_hash.c:155)
+==12227==    by 0x400A49: main (state_hash.c:64)
+==12227== 
+MA	MASSACHUSETTS
+i = 7
+SC	SOUTH CAROLINA
+i = 8
+GA	GEORGIA
+i = 9
+MD	MARYLAND
+i = 10
+ME	MAINE
+i = 12
+SD	SOUTH DAKOTA
+i = 13
+MH	MARSHALL ISLANDS
+i = 14
+MI	MICHIGAN
+i = 19
+MN	MINNESOTA
+i = 20
+AK	ALASKA
+i = 21
+AL	ALABAMA
+i = 22
+MP	NORTHERN MARIANA ISLANDS
+i = 24
+MS	MISSISSIPPI
+i = 25
+MO	MISSOURI
+i = 26
+MT	MONTANA
+i = 27
+AR	ARKANSAS
+i = 28
+AS	AMERICAN SAMOA
+i = 29
+GU	GUAM
+i = 35
+AZ	ARIZONA
+i = 41
+NC	NORTH CAROLINA
+i = 42
+ND	NORTH DAKOTA
+i = 43
+NE	NEBRASKA
+i = 46
+NH	NEW HAMPSHIRE
+i = 48
+NJ	NEW JERSEY
+i = 49
+HI	HAWAII
+i = 50
+TN	TENNESSEE
+i = 51
+NM	NEW MEXICO
+i = 60
+NV	NEVADA
+i = 61
+TX	TEXAS
+i = 63
+NY	NEW YORK
+i = 74
+IA	IOWA
+i = 76
+CA	CALIFORNIA
+i = 77
+ID	IDAHO
+i = 79
+OH	OHIO
+i = 82
+OK	OKLAHOMA
+i = 85
+IL	ILLINOIS
+i = 87
+IN	INDIANA
+i = 89
+OR	OREGON
+i = 90
+CO	COLORADO
+i = 94
+UT	UTAH
+i = 95
+CT	CONNECTICUT
+i = 103
+VA	VIRGINIA
+i = 105
+PA	PENNSYLVANIA
+i = 111
+DC	DISTRICT OF COLUMBIA
+i = 112
+VI	VIRGIN ISLANDS
+i = 113
+DE	DELAWARE
+i = 122
+PR	PUERTO RICO
+i = 123
+VT	VERMONT
+i = 127
+PW	PALAU
+i = 136
+WA	WASHINGTON
+i = 144
+WI	WISCONSIN
+i = 157
+WV	WEST VIRGINIA
+i = 158
+KS	KANSAS
+i = 160
+WY	WYOMING
+i = 164
+KY	KENTUCKY
+i = 173
+LA	LOUISIANA
+i = 179
+RI	RHODE ISLAND
+i = 186
+FL	FLORIDA
+i = 187
+FM	FEDERATED STATES OF MICRONESIA
+Enter a two-digit state abbreviation (q to quit): NM
+==12227== Invalid read of size 1
+==12227==    at 0x4E88CC0: vfprintf (vfprintf.c:1632)
+==12227==    by 0x4E8F898: printf (printf.c:33)
+==12227==    by 0x400C7D: main (state_hash.c:110)
+==12227==  Address 0x520660a is 0 bytes after a block of size 10 alloc'd
+==12227==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400DDA: new_postal (state_hash.c:148)
+==12227==    by 0x400A49: main (state_hash.c:64)
+==12227== 
+NEW MEXICO
+
+Enter a two-digit state abbreviation (q to quit): Al L
+ALABAMA
+
+Enter a two-digit state abbreviation (q to quit): ^[[A    q
+==12227== Conditional jump or move depends on uninitialised value(s)
+==12227==    at 0x4C2EDA1: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400CB4: main (state_hash.c:116)
+==12227== 
+==12227== Conditional jump or move depends on uninitialised value(s)
+==12227==    at 0x4C2EDA1: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==12227==    by 0x400CD8: main (state_hash.c:117)
+==12227== 
+==12227== 
+==12227== HEAP SUMMARY:
+==12227==     in use at exit: 0 bytes in 0 blocks
+==12227==   total heap usage: 124 allocs, 124 frees, 10,577 bytes allocated
+==12227== 
+==12227== All heap blocks were freed -- no leaks are possible
+==12227== 
+==12227== For counts of detected and suppressed errors, rerun with: -v
+==12227== Use --track-origins=yes to see where uninitialised values come from
+==12227== ERROR SUMMARY: 779 errors from 7 contexts (suppressed: 0 from 0)
+]0;nick@nick-Lenovo-ideapad-Y700-15ISK: ~/Dropbox/122/hw/6b[01;32mnick@nick-Lenovo-ideapad-Y700-15ISK[00m:[01;34m~/Dropbox/122/hw/6b[00m$ exit
+exit
+
+Script done on Fri 14 Apr 2017 03:44:43 PM MDT

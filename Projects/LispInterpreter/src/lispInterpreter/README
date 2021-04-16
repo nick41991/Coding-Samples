@@ -1,0 +1,19 @@
+FILE: LISP Interpreter - README
+By Nicholas Smith 900327106
+Date: April 16, 2018
+
+Included in this TARball is my implementation of a LISP Interpreter.
+
+How to run:
+	From source directory (LispInterpreter/src) enter the following:
+
+		dir/LispIntepreter/src$ make
+		dir/LispInterpreter/src$ java lispInterpreter.InterpreterMain
+
+
+Known Issues:
+	As it stands the interpreter is very bare bones. It will interpret LISP 
+	commands as outlined in FINALPROJECT.pdf successfully. However, it 
+	contains no error checking and thus undefined commands will lead to 
+	undefined behaviors. Also, sqrt, sin, cos, tan have yet to be 
+	implemented.

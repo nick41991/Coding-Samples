@@ -1,0 +1,35 @@
+Nicholas Smith
+CSE331
+2019-03-06
+Lab 2
+
+This README is for the cache simulator files run.c, cache.h, and cache.c files.
+
+Compilation:
+	To compile simply type "make" to utilize the included make file.
+		make clean
+		make
+
+	Alternatively, compile with the folowing steps:
+		gcc -g -Wall -c cache.c
+		gcc -g -Wall run.c -lm cache.o -lm -o run
+		
+		###Note the use of the math library###
+
+Usage:
+	To run type:
+		./run [CONFIG] [TRACE] ###Order matters###
+	Where:
+		[CONFIG] is a .conf file to be used in configuring the cache
+		[TRACE] is a .trace file to be used to simulate a program in the cache
+
+Output:
+	Output is to standard out unless redirected.
+	
+	run will print the following five lines:
+
+		Total hit rate
+		Load hit rate
+		Store hit rate
+		Total run time (cycles)
+		Average memory access latency

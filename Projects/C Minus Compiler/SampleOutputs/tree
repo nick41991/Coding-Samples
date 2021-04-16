@@ -1,0 +1,31 @@
+C Parser:  Reading from file tests/simple.c . . .
+Input Parsed Successfully!
+Program
+	|
+	|
+	-------- main
+		|
+		|
+		-------- int
+		|
+		|
+		-------- params
+		|
+		|
+		-------- Compound Statement
+			|
+			|
+			-------- Local Declarations
+			|
+			|
+			-------- Statement List
+				|
+				|
+				-------- Return
+					|
+					|
+					-------- Expression
+						|
+						|
+						-------- 1
+Compiler:  C program parsed successfully.

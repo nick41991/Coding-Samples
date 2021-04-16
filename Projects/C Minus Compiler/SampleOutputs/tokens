@@ -1,0 +1,12 @@
+C Parser:  Reading from file tests/simple.c . . .
+Input Parsed Successfully!
+<int, TYPE_SPECIFIER>
+<main, IDENTIFIER>
+<(, LPAREN>
+<), RPAREN>
+<{, LBRACKET>
+<return, RETURN>
+<1, INTEGER_LITERAL>
+<;, SEMICOLON>
+<}, RBRACKET>
+Compiler:  C program parsed successfully.

@@ -1,0 +1,14 @@
+How to run:
+
+make scrabble
+
+./scrabble
+
+From here you can choose to:
+
+1. Validate a word is valid in the Scrabble Disctionary
+
+2. Given a set of tiles, generate the highest point value word.
+
+This program utilizes a binary search to quickly search through the Scrabble dictionary.
+

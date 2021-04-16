@@ -1,0 +1,322 @@
+C Parser:  Reading from file tests/while.c . . .
+Input Parsed Successfully!
+Program
+	|
+	|
+	-------- my_func
+		|
+		|
+		-------- int
+		|
+		|
+		-------- params
+			|
+			|
+			-------- a
+				|
+				|
+				-------- int
+			|
+			|
+			-------- b
+				|
+				|
+				-------- int
+		|
+		|
+		-------- Compound Statement
+			|
+			|
+			-------- Local Declarations
+			|
+			|
+			-------- Statement List
+				|
+				|
+				-------- Return
+					|
+					|
+					-------- Expression
+						|
+						|
+						-------- a
+	|
+	|
+	-------- main
+		|
+		|
+		-------- int
+		|
+		|
+		-------- params
+		|
+		|
+		-------- Compound Statement
+			|
+			|
+			-------- Local Declarations
+				|
+				|
+				-------- a
+					|
+					|
+					-------- int
+			|
+			|
+			-------- Statement List
+				|
+				|
+				-------- Expression
+					|
+					|
+					-------- a
+					|
+					|
+					-------- =
+					|
+					|
+					-------- Expression
+						|
+						|
+						-------- 1
+				|
+				|
+				-------- LABEL
+					|
+					|
+					-------- 
+						|
+						|
+						-------- while
+							|
+							|
+							-------- whileCondition
+								|
+								|
+								-------- Expression
+									|
+									|
+									-------- !
+										|
+										|
+										-------- Expression
+											|
+											|
+											-------- Expression
+												|
+												|
+												-------- Expression
+													|
+													|
+													-------- a
+													|
+													|
+													-------- >
+													|
+													|
+													-------- 10
+							|
+							|
+							-------- whileStatement
+								|
+								|
+								-------- Local Declarations
+								|
+								|
+								-------- Statement List
+									|
+									|
+									-------- Expression
+										|
+										|
+										-------- a
+										|
+										|
+										-------- =
+										|
+										|
+										-------- Expression
+											|
+											|
+											-------- a
+											|
+											|
+											-------- +
+											|
+											|
+											-------- 1
+									|
+									|
+									-------- if
+										|
+										|
+										-------- ifCondition
+											|
+											|
+											-------- Expression
+												|
+												|
+												-------- Expression
+													|
+													|
+													-------- a
+													|
+													|
+													-------- %
+													|
+													|
+													-------- 1
+												|
+												|
+												-------- ==
+												|
+												|
+												-------- 0
+										|
+										|
+										-------- ifStatement
+											|
+											|
+											-------- Local Declarations
+											|
+											|
+											-------- Statement List
+												|
+												|
+												-------- Break
+				|
+				|
+				-------- if
+					|
+					|
+					-------- ifCondition
+						|
+						|
+						-------- Expression
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- a
+								|
+								|
+								-------- >
+								|
+								|
+								-------- 10
+							|
+							|
+							-------- &&
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- a
+								|
+								|
+								-------- ==
+								|
+								|
+								-------- 5
+							|
+							|
+							-------- ||
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- my_func
+									|
+									|
+									-------- Expression
+										|
+										|
+										-------- a
+								|
+								|
+								-------- ==
+								|
+								|
+								-------- a
+					|
+					|
+					-------- ifStatement
+						|
+						|
+						-------- Expression
+							|
+							|
+							-------- a
+							|
+							|
+							-------- =
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- a
+								|
+								|
+								-------- -
+								|
+								|
+								-------- 1
+					|
+					|
+					-------- else
+				|
+				|
+				-------- Expression
+					|
+					|
+					-------- b
+						|
+						|
+						-------- int
+				|
+				|
+				-------- Expression
+					|
+					|
+					-------- a
+					|
+					|
+					-------- =
+					|
+					|
+					-------- Expression
+						|
+						|
+						-------- my_func
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- a
+							|
+							|
+							-------- Expression
+								|
+								|
+								-------- b
+								|
+								|
+								-------- +
+								|
+								|
+								-------- 1
+				|
+				|
+				-------- Return
+					|
+					|
+					-------- Expression
+						|
+						|
+						-------- a
+Compiler:  C program parsed successfully.

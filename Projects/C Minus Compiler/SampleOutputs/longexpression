@@ -1,0 +1,69 @@
+C Parser:  Reading from file tests/longstatement.c . . .
+Input Parsed Successfully!
+Program
+	|
+	-------- main
+		|
+		-------- int
+		|
+		-------- params
+		|
+		-------- Compound Statement
+			|
+			-------- Local Declarations
+				|
+				-------- a
+					|
+					-------- int
+			|
+			-------- Statement List
+				|
+				-------- Expression
+					|
+					-------- a
+					|
+					-------- =
+					|
+					-------- Expression
+						|
+						-------- Expression
+							|
+							-------- 1
+							|
+							-------- +
+							|
+							-------- Expression
+								|
+								-------- 2
+						|
+						-------- *
+						|
+						-------- 3
+						|
+						-------- /
+						|
+						-------- 4
+						|
+						-------- +
+						|
+						-------- Expression
+							|
+							-------- Expression
+								|
+								-------- 5
+								|
+								-------- *
+								|
+								-------- 6
+				|
+				-------- Return
+					|
+					-------- Expression
+						|
+						-------- 1
+Compiler:  C program parsed successfully.
+------------------------
+Symbol	Type	Scope
+a	int	main
+------------------------
+
